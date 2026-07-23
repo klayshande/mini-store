@@ -1,0 +1,65 @@
+:root {
+  --brand-primary: #8cad0b;
+  --brand-accent: #86e304;
+  --brand-bg: #eef0f4b0;
+}
+
+body {
+  background-color: var(--brand-bg);
+}
+
+.navbar-brand {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.nav-tabs .nav-link.active {
+  border-bottom: 3px solid var(--brand-accent);
+  font-weight: 600;
+  color: var(--brand-primary);
+}
+
+.nav-tabs .nav-link {
+  color: #555;
+}
+
+#profile-picture {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid var(--brand-primary);
+}
+
+.product-card img {
+  height: 180px;
+  object-fit: cover;
+}
+
+.badge-category {
+  text-transform: capitalize;
+}
+
+#cat-fact-box {
+  min-height: 80px;
+}
+
+pre#json-modal-body {
+  background-color: #212529;
+  color: #d1fae5;
+  padding: 1rem;
+  border-radius: 6px;
+  max-height: 60vh;
+  overflow: auto;
+  font-size: 0.85rem;
+}
+
+.spinner-inline {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+footer {
+  color: #888;
+  font-size: 0.85rem;
+}

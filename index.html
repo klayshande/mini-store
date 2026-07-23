@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Store - APIs Externas y Almacenamiento Local</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav class="navbar navbar-dark" style="background-color: var(--brand-primary);">
+    <div class="container">
+      <span class="navbar-brand"><i class="bi bi-shop"></i> Mini Store</span>
+      <span class="text-white small">Prácticas: APIs, JSON, Async/Await y localStorage</span>
+    </div>
+  </nav>
+
+  <div class="container my-4">
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs" id="mainTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab">
+          <i class="bi bi-person-circle"></i> Perfil
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">
+          <i class="bi bi-people"></i> Usuarios
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="products-tab" data-bs-toggle="tab" data-bs-target="#products" type="button" role="tab">
+          <i class="bi bi-bag"></i> Productos
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="catfacts-tab" data-bs-toggle="tab" data-bs-target="#catfacts" type="button" role="tab">
+          <i class="bi bi-emoji-smile"></i> Cat Facts
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="research-tab" data-bs-toggle="tab" data-bs-target="#research" type="button" role="tab">
+          <i class="bi bi-journal-text"></i> Investigación
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content border border-top-0 p-4 bg-white shadow-sm" id="mainTabsContent">
+
+      <!-- PROFILE TAB -->
+      <div class="tab-pane fade show active" id="profile" role="tabpanel">
+        <h4 class="mb-3">Perfil de usuario</h4>
+        <p class="text-muted">
+          La imagen de perfil se carga automáticamente al abrir la página, consumiendo
+          <code>https://dog.ceo/api/breeds/image/random</code>, sin necesidad de presionar ningún botón.
+        </p>
+        <div class="card p-4 text-center" style="max-width: 360px;">
+          <div class="d-flex justify-content-center mb-3">
+            <img id="profile-picture" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Crect width='160' height='160' fill='%23e9ecef'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='14' fill='%236c757d' text-anchor='middle' dominant-baseline='middle'%3ECargando...%3C/text%3E%3C/svg%3E" alt="Foto de perfil">
+          </div>
+          <h5 id="profile-name">Estudiante Demo</h5>
+          <p class="text-muted mb-2">Usuario de la Mini Store</p>
+          <button class="btn btn-sm btn-outline-secondary" id="reload-avatar-btn">
+            <i class="bi bi-arrow-clockwise"></i> Cargar otra imagen
+          </button>
+          <div id="profile-status" class="small text-danger mt-2"></div>
+        </div>
+      </div>
+
+      <!-- USERS TAB -->
+      <div class="tab-pane fade" id="users" role="tabpanel">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="m-0">Usuarios</h4>
+          <div>
+            <button class="btn btn-sm btn-outline-primary" id="btn-view-users-json" data-bs-toggle="modal" data-bs-target="#jsonModal">
+              <i class="bi bi-braces"></i> Ver JSON de usuarios
+            </button>
+            <button class="btn btn-sm btn-primary" id="reload-users-btn">
+              <i class="bi bi-arrow-clockwise"></i> Recargar
+            </button>
+          </div>
+        </div>
+
+        <div id="users-status" class="text-muted mb-2"></div>
+
+        <div class="table-responsive">
+          <table class="table table-striped table-hover align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Ciudad</th>
+                <th>Empresa</th>
+                <th>Origen</th>
+              </tr>
+            </thead>
+            <tbody id="users-table-body">
+              <!-- filled dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <hr>
+
+        <h5>Agregar usuario local</h5>
+        <p class="text-muted small">
+          Este usuario no se envía a la API real. Solo se agrega al arreglo local de la aplicación
+          y se guarda en <code>localStorage</code> para que persista al recargar la página.
+        </p>
+        <form id="add-user-form" class="row g-2">
+          <div class="col-md-3">
+            <input type="text" class="form-control" id="new-user-name" placeholder="Nombre completo" required>
+          </div>
+          <div class="col-md-3">
+            <input type="email" class="form-control" id="new-user-email" placeholder="Email" required>
+          </div>
+          <div class="col-md-2">
+            <input type="text" class="form-control" id="new-user-phone" placeholder="Teléfono">
+          </div>
+          <div class="col-md-2">
+            <input type="text" class="form-control" id="new-user-city" placeholder="Ciudad">
+          </div>
+          <div class="col-md-2">
+            <input type="text" class="form-control" id="new-user-company" placeholder="Empresa">
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-success btn-sm mt-1">
+              <i class="bi bi-plus-circle"></i> Agregar usuario
+            </button>
+            <button type="button" class="btn btn-outline-danger btn-sm mt-1" id="clear-local-users-btn">
+              <i class="bi bi-trash"></i> Limpiar usuarios locales
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- PRODUCTS TAB -->
+      <div class="tab-pane fade" id="products" role="tabpanel">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="m-0">Catálogo de productos</h4>
+          <div>
+            <button class="btn btn-sm btn-outline-primary" id="btn-view-products-json" data-bs-toggle="modal" data-bs-target="#jsonModal">
+              <i class="bi bi-braces"></i> Ver JSON de productos
+            </button>
+            <button class="btn btn-sm btn-primary" id="reload-products-btn">
+              <i class="bi bi-arrow-clockwise"></i> Recargar
+            </button>
+          </div>
+        </div>
+        <div id="products-status" class="text-muted mb-2"></div>
+        <div class="row g-3" id="products-container">
+          <!-- filled dynamically -->
+        </div>
+      </div>
+
+      <!-- CAT FACTS TAB -->
+      <div class="tab-pane fade" id="catfacts" role="tabpanel">
+        <h4 class="mb-3">Dato curioso de gatos</h4>
+        <p class="text-muted">
+          Al presionar el botón, la aplicación consume <code>https://catfact.ninja/fact</code>
+          de forma asíncrona y muestra el resultado.
+        </p>
+        <button class="btn btn-warning" id="get-cat-fact-btn">
+          <i class="bi bi-lightbulb"></i> Mostrar dato curioso
+        </button>
+        <div class="card mt-3 p-3" id="cat-fact-box">
+          <em class="text-muted">Presiona el botón para ver un dato curioso de gatos...</em>
+        </div>
+      </div>
+
+      <!-- RESEARCH TAB -->
+      <div class="tab-pane fade" id="research" role="tabpanel">
+        <h4 class="mb-3">Investigación complementaria</h4>
+
+        <h5>Vanilla JavaScript vs jQuery</h5>
+        <table class="table table-bordered table-sm">
+          <thead class="table-light">
+            <tr>
+              <th>Tarea</th>
+              <th>Vanilla JavaScript</th>
+              <th>jQuery</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Seleccionar un elemento</td>
+              <td><code>document.querySelector('#id')</code></td>
+              <td><code>$('#id')</code></td>
+            </tr>
+            <tr>
+              <td>Escuchar un evento</td>
+              <td><code>elemento.addEventListener('click', fn)</code></td>
+              <td><code>$('#id').on('click', fn)</code></td>
+            </tr>
+            <tr>
+              <td>Solicitar datos a una API</td>
+              <td><code>fetch(url).then(...)</code> o <code>await fetch(url)</code></td>
+              <td><code>$.ajax({url, success: fn})</code></td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          En este proyecto se utilizó <strong>Vanilla JavaScript</strong> porque el navegador moderno ya incluye
+          <code>fetch</code>, <code>querySelector</code> y <code>addEventListener</code> de forma nativa, con soporte
+          completo para <code>async/await</code>. Esto elimina la necesidad de cargar una librería adicional (jQuery)
+          solo para tareas que el propio lenguaje ya resuelve de forma eficiente y con mejor rendimiento.
+        </p>
+
+        <h5 class="mt-4">localStorage vs sessionStorage vs cookies</h5>
+        <table class="table table-bordered table-sm">
+          <thead class="table-light">
+            <tr>
+              <th>Característica</th>
+              <th>localStorage</th>
+              <th>sessionStorage</th>
+              <th>Cookies</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Duración de los datos</td>
+              <td>Permanece hasta que se borre manualmente</td>
+              <td>Se borra al cerrar la pestaña/navegador</td>
+              <td>Configurable (puede expirar en minutos, días o nunca)</td>
+            </tr>
+            <tr>
+              <td>Capacidad aproximada</td>
+              <td>~5-10 MB</td>
+              <td>~5-10 MB</td>
+              <td>~4 KB</td>
+            </tr>
+            <tr>
+              <td>¿Se envía al servidor?</td>
+              <td>No</td>
+              <td>No</td>
+              <td>Sí, en cada petición HTTP</td>
+            </tr>
+            <tr>
+              <td>Caso de uso típico</td>
+              <td>Preferencias, datos que deben persistir entre sesiones</td>
+              <td>Datos temporales de una sola sesión (ej. un formulario en progreso)</td>
+              <td>Autenticación, identificadores de sesión que el servidor necesita leer</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          En esta práctica se usó <strong>localStorage</strong> para guardar los usuarios agregados manualmente,
+          porque se necesitaba que esos datos <strong>persistieran incluso después de recargar la página</strong>,
+          y no era necesario que el servidor los leyera (a diferencia de una cookie), ni que desaparecieran al
+          cerrar la pestaña (a diferencia de sessionStorage).
+        </p>
+      </div>
+
+    </div>
+
+    <footer class="text-center mt-4">
+      <p>Mini Store &mdash; Práctica de consumo de APIs, JSON, async/await y almacenamiento local.</p>
+    </footer>
+  </div>
+
+  <!-- JSON Modal -->
+  <div class="modal fade" id="jsonModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="json-modal-title">JSON</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <pre id="json-modal-body">{}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
